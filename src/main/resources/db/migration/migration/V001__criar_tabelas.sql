@@ -1,16 +1,19 @@
-CREATE TABLE pedido (
+CREATE TABLE pedido_processor (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    cliente_id BIGINT NOT NULL,
+    pedido_reciver_id BIGINT,
+    cliente_id BIGINT ,
     total DECIMAL(10,2),
-    status VARCHAR(50) NOT NULL,
+    status VARCHAR(50),
     criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE item_pedido (
+CREATE TABLE item_pedido_processor (
      id BIGINT AUTO_INCREMENT PRIMARY KEY,
-     pedido_id BIGINT NOT NULL,
-     sku VARCHAR(100) NOT NULL,
-     quantidade INT NOT NULL,
-     preco_unitario DECIMAL(10,2) NOT NULL,
-     FOREIGN KEY (pedido_id) REFERENCES pedido(id) ON DELETE CASCADE
+     pedidoprocessor_id BIGINT ,
+     produto_id BIGINT ,
+     sku VARCHAR(100) ,
+     quantidade INT ,
+     preco_unitario DECIMAL(10,2) ,
+     preco_total DECIMAL(10,2) ,
+     FOREIGN KEY (pedidoprocessor_id) REFERENCES pedido_processor(id) ON DELETE CASCADE
 );
