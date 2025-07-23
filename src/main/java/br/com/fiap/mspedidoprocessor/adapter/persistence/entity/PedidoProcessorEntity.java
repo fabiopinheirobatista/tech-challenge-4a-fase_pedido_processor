@@ -3,10 +3,13 @@ package br.com.fiap.mspedidoprocessor.adapter.persistence.entity;
 import br.com.fiap.mspedidoprocessor.core.domain.PedidoProcessor;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "pedido_processor")
@@ -18,8 +21,8 @@ import java.util.List;
 public class PedidoProcessorEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id", columnDefinition = "VARCHAR(36)")
+    private String id;
 
     @Column(name = "pedido_reciver_id")
     private Long pedidoReciverId;
@@ -38,19 +41,27 @@ public class PedidoProcessorEntity {
     @OneToMany(mappedBy = "pedidoProcessor", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemPedidoProcessorEntity> itens;
 
+
+    @PrePersist
+    public void prePersist() {
+        if (id == null) {
+            id = UUID.randomUUID().toString();
+        }
+    }
+
     public PedidoProcessorEntity(PedidoProcessor pedidoProcessor) {
-        this.id = pedidoProcessor.getId();
+        String id = pedidoProcessor.getId().toString();
+        if (id == null) {
+            id = UUID.randomUUID().toString();
+        }
+        this.id = id;
+        this.status = pedidoProcessor.getStatus().toString();
+        this.itens = new ArrayList<>();
         this.pedidoReciverId = pedidoProcessor.getPedidoReciverId();
         this.clienteId = pedidoProcessor.getClienteId();
+        this.criadoEm = LocalDateTime.now();
         this.total = pedidoProcessor.getTotal();
-        this.status = pedidoProcessor.getStatus().name();
-//        if (pedidoProcessor.getItens() != null) {
-//            this.itens = pedidoProcessor.getItens().stream()
-//                    .map(item -> ItemPedidoProcessorEntity.builder()
-//                            .itemPedidoProcessor(item)
-//                            .pedidoProcessor(this)
-//                            .build())
-//                    .toList();
-//        }
+
+
     }
 }

@@ -4,22 +4,28 @@ import br.com.fiap.mspedidoprocessor.adapter.persistence.entity.PedidoProcessorE
 import br.com.fiap.mspedidoprocessor.adapter.persistence.repository.PedidoRepositoryJpa;
 import br.com.fiap.mspedidoprocessor.core.domain.PedidoProcessor;
 import br.com.fiap.mspedidoprocessor.core.gateways.PedidoGateway;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import br.com.fiap.mspedidoprocessor.adapter.mapper.PedidoProcessorMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.util.UUID;
 
 @Component
 @AllArgsConstructor
 public class RepositorioDePedidoGatewayImpl implements PedidoGateway {
 
     private final PedidoRepositoryJpa pedidoRepositoryJpa;
-    private final ObjectMapper objectMapper;
+    private final PedidoProcessorMapper pedidoProcessorMapper;
 
     @Override
     public PedidoProcessor salvar(PedidoProcessor pedidoProcessor) {
-        PedidoProcessorEntity pedidoEntity = new PedidoProcessorEntity(pedidoProcessor);
+        if (pedidoProcessor.getId() == null) {
+            pedidoProcessor.setId(UUID.randomUUID().toString());
+        }
+        PedidoProcessorEntity pedidoEntity = pedidoProcessorMapper.toEntity(pedidoProcessor);
+
         PedidoProcessorEntity save = pedidoRepositoryJpa.save(pedidoEntity);
-        return objectMapper.convertValue(save, PedidoProcessor.class);
+        return pedidoProcessorMapper.toModel(save);
     }
 
     @Override

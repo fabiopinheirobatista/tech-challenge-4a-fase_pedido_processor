@@ -1,5 +1,5 @@
 CREATE TABLE pedido_processor (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    id VARCHAR(36) PRIMARY KEY,
     pedido_reciver_id BIGINT,
     cliente_id BIGINT ,
     total DECIMAL(10,2),
@@ -9,7 +9,7 @@ CREATE TABLE pedido_processor (
 
 CREATE TABLE item_pedido_processor (
      id BIGINT AUTO_INCREMENT PRIMARY KEY,
-     pedidoprocessor_id BIGINT ,
+     pedidoprocessor_id VARCHAR(36) ,
      produto_id BIGINT ,
      sku VARCHAR(100) ,
      quantidade INT ,

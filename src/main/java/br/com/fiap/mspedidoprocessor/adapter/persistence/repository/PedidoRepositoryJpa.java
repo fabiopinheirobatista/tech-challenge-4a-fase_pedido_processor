@@ -4,6 +4,8 @@ import br.com.fiap.mspedidoprocessor.adapter.persistence.entity.PedidoProcessorE
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.UUID;
+
 @Repository
-public interface PedidoRepositoryJpa extends JpaRepository<PedidoProcessorEntity, Long> {
+public interface PedidoRepositoryJpa extends JpaRepository<PedidoProcessorEntity, String> {
 }
