@@ -1,6 +1,6 @@
 package br.com.fiap.mspedidoprocessor.adapter.gateway;
 
-import br.com.fiap.mspedidoprocessor.adapter.external.dto.Pedido;
+import br.com.fiap.mspedidoprocessor.adapter.external.clientkafka.dto.Pedido;
 import br.com.fiap.mspedidoprocessor.core.domain.PedidoProcessor;
 import br.com.fiap.mspedidoprocessor.core.usecase.pedidoprocessor.PedidoProcessorUseCase;
 import com.fasterxml.jackson.databind.ObjectMapper;

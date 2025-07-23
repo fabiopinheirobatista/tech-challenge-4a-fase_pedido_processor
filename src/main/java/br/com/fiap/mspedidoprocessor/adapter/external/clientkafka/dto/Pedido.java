@@ -1,9 +1,8 @@
-package br.com.fiap.mspedidoprocessor.adapter.external.dto;
+package br.com.fiap.mspedidoprocessor.adapter.external.clientkafka.dto;
 
 import lombok.Getter;
 import lombok.Setter;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package br.com.fiap.mspedidoprocessor.adapter.external.dto;
+package br.com.fiap.mspedidoprocessor.adapter.external.estoqueservice.dto;
 
 public class EstoqueDTO {
     public String sku;

@@ -1,5 +1,6 @@
-package br.com.fiap.mspedidoprocessor.adapter.external;
+package br.com.fiap.mspedidoprocessor.adapter.external.produtoservice;
 
+import br.com.fiap.mspedidoprocessor.adapter.external.produtoservice.dto.ProdutoDtoResponse;
 import br.com.fiap.mspedidoprocessor.core.gateways.ProdutoServiceGateway;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,8 +21,8 @@ public interface ProdutoServiceClient extends ProdutoServiceGateway {
         }
     }
 
-    @GetMapping("/produtos/{sku}")
-    void buscarProduto(@PathVariable("sku") String sku);
+    @GetMapping("/produtos/sku/{sku}")
+    ProdutoDtoResponse buscarProduto(@PathVariable("sku") String sku);
 
     @GetMapping("/produtos/{sku}/preco")
     BigDecimal obterPreco(@PathVariable("sku") String sku);

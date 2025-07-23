@@ -1,4 +1,4 @@
-package br.com.fiap.mspedidoprocessor.adapter.external;
+package br.com.fiap.mspedidoprocessor.adapter.external.estoqueservice;
 
 import br.com.fiap.mspedidoprocessor.core.gateways.EstoqueServiceGateway;
 import org.springframework.cloud.openfeign.FeignClient;

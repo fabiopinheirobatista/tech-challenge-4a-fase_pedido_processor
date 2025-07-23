@@ -1,4 +1,4 @@
-package br.com.fiap.mspedidoprocessor.adapter.external.dto;
+package br.com.fiap.mspedidoprocessor.adapter.external.clientkafka.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

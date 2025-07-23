@@ -1,4 +1,4 @@
-package br.com.fiap.mspedidoprocessor.adapter.external.dto;
+package br.com.fiap.mspedidoprocessor.adapter.external.clientkafka.dto;
 
 public enum PedidoStatus {
     ABERTO,

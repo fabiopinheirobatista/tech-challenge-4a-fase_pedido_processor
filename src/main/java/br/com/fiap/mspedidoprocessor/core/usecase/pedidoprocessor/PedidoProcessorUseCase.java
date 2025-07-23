@@ -1,5 +1,6 @@
 package br.com.fiap.mspedidoprocessor.core.usecase.pedidoprocessor;
 
+import br.com.fiap.mspedidoprocessor.adapter.external.produtoservice.dto.ProdutoDtoResponse;
 import br.com.fiap.mspedidoprocessor.core.domain.ItemPedidoProcessor;
 import br.com.fiap.mspedidoprocessor.core.domain.PedidoProcessor;
 import br.com.fiap.mspedidoprocessor.core.domain.PedidoStatus;
@@ -33,13 +34,14 @@ public class PedidoProcessorUseCase {
         BigDecimal total = BigDecimal.ZERO;
         List<ItemPedidoProcessor> itens = pedidoProcessor.getItens();
         for (ItemPedidoProcessor item : itens) {
-            if (!produtoService.skuExiste(item.getSku())) {
+            ProdutoDtoResponse produtoDtoResponse = produtoService.buscarProduto(item.getSku());
+            if (produtoDtoResponse == null) {
                 pedidoProcessor.setStatus(PedidoStatus.FALHADO);
                 pedidoGateway.atualizar(pedidoProcessor);
                 return;
             }
 
-            BigDecimal preco = produtoService.obterPreco(item.getSku());
+            BigDecimal preco = produtoDtoResponse.preco();
             item.setPrecoUnitario(preco);
             total = total.add(item.getPrecoTotal());
         }

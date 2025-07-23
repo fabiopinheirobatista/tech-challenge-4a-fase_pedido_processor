@@ -1,9 +1,7 @@
-package br.com.fiap.mspedidoprocessor.adapter.external.dto;
+package br.com.fiap.mspedidoprocessor.adapter.external.clientkafka.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-
-import java.math.BigDecimal;
 
 @Setter
 @Getter
