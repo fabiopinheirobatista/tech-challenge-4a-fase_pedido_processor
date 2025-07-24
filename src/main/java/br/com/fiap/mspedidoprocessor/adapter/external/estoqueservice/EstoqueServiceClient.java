@@ -13,11 +13,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface EstoqueServiceClient extends EstoqueServiceGateway {
 
     @PutMapping("/estoque/baixa")
-    ResponseEntity<Void> debitarEstoque(@RequestBody BaixaEstoqueRequestDTO request);
+    ResponseEntity<Void> baixaEstoque(@RequestBody BaixaEstoqueRequestDTO request);
 
-    @PostMapping("/estoque/repor")
-    void reverterEstoque(@RequestParam("sku") String sku,
-                        @RequestParam("quantidade") int quantidade);
+    @PutMapping("/estoque/estorno")
+    void reverterEstoque(@RequestBody BaixaEstoqueRequestDTO request);
 
 
 }

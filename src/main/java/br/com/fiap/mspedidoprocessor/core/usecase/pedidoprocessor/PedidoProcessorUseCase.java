@@ -8,14 +8,13 @@ import br.com.fiap.mspedidoprocessor.adapter.mapper.PedidoProcessorMapper;
 import br.com.fiap.mspedidoprocessor.core.domain.ItemPedidoProcessor;
 import br.com.fiap.mspedidoprocessor.core.domain.PedidoProcessor;
 import br.com.fiap.mspedidoprocessor.core.domain.PedidoStatus;
+import br.com.fiap.mspedidoprocessor.core.exception.*;
 import br.com.fiap.mspedidoprocessor.core.gateways.*;
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.UUID;
 
 @Component
 @AllArgsConstructor
@@ -29,68 +28,108 @@ public class PedidoProcessorUseCase {
     private final PedidoProcessorMapper pedidoProcessorMapper;
 
 
-    public void processar(PedidoProcessor pedidoProcessor, String numeroCartao) {
-        boolean clienteExiste = clienteService.clienteExiste(pedidoProcessor.getClienteId());
-        if (!clienteExiste) {
-            pedidoProcessor.setStatus(PedidoStatus.FALHADO);
-            pedidoGateway.atualizar(pedidoProcessor);
-            return;
-        }
+    public void processar(PedidoProcessor pedidoProcessor) {
+        pedidoProcessor.setStatus(PedidoStatus.ABERTO);
+        pedidoGateway.salvar(pedidoProcessor);
 
-        // Valida SKUs e calcula total
-        BigDecimal total = BigDecimal.ZERO;
-        List<ItemPedidoProcessor> itens = pedidoProcessor.getItens();
-        for (ItemPedidoProcessor item : itens) {
-            ProdutoDtoResponse produtoDtoResponse = produtoService.buscarProduto(item.getSku());
-            if (produtoDtoResponse == null) {
-                pedidoProcessor.setStatus(PedidoStatus.FALHADO);
-                pedidoGateway.atualizar(pedidoProcessor);
-                return;
+        this.validarCliente(pedidoProcessor);
+
+        this.calculaTotal(pedidoProcessor);
+
+        this.baixarNoEstoque(pedidoProcessor);
+
+        PagamentoRequestDTO request = pedidoProcessorMapper.toPagamentoRequestDTO(pedidoProcessor);
+        PagamentoResponseDTO resposta = validamento(request, pedidoProcessor);
+        var status = switch (resposta.status()) {
+            case "APROVADO" -> PedidoStatus.PAGAMENTO_APROVADO;
+            case "PROCESSANDO" -> PedidoStatus.PAGAMENTO_PROCESSANDO;
+            case "RECUSADO" -> PedidoStatus.PAGAMENTO_RECUSADO;
+            default -> throw new PagamentoException("Status de pagamento inválido: " + resposta.status());
+        };
+
+        pedidoProcessor.setStatus(status);
+        pedidoGateway.salvar(pedidoProcessor);
+
+    }
+
+    private PagamentoResponseDTO validamento(PagamentoRequestDTO request, PedidoProcessor pedidoProcessor) {
+            PagamentoResponseDTO resposta = pagamentoService.solicitarPagamento(request).getBody();
+            if (resposta == null || !resposta.status().matches("APROVADO")) {
+                pedidoProcessor.getItens().forEach(item -> {
+                    try {
+                        estoqueService.reverterEstoque(new BaixaEstoqueRequestDTO(item.getSku(), item.getQuantidade()));
+                    } catch (Exception ex) {
+                        pedidoProcessor.setStatus(PedidoStatus.FALHA_PAGAMENTO);
+                        pedidoGateway.salvar(pedidoProcessor);
+                        throw new EstoqueException("Erro ao reverter estoque para SKU: " + item.getSku() + " - "+ex.getMessage(), ex);
+                    }
+                });
+                pedidoProcessor.setStatus(PedidoStatus.FALHA_PAGAMENTO);
+                pedidoGateway.salvar(pedidoProcessor);
+                throw new PagamentoException("Resposta de pagamento inválida. Status: " + (resposta != null ? resposta.status() : "null"));
+            }
+            return resposta;
+
+    }
+
+    private void calculaTotal(PedidoProcessor pedidoProcessor){
+        try {
+            BigDecimal total = BigDecimal.ZERO;
+            List<ItemPedidoProcessor> itens = pedidoProcessor.getItens();
+            for (ItemPedidoProcessor item : itens) {
+                ProdutoDtoResponse produtoDtoResponse = validarProduto(pedidoProcessor, item.getSku());
+                produtoService.buscarProduto(item.getSku());
+                if (produtoDtoResponse == null) {
+                    pedidoProcessor.setStatus(PedidoStatus.FALHA_PROCESSAR_ESTOQUE);
+                    pedidoGateway.salvar(pedidoProcessor);
+                    return;
+                }
+                BigDecimal preco = produtoDtoResponse.preco();
+                item.setPrecoUnitario(preco);
+                BigDecimal quantidade = BigDecimal.valueOf(item.getQuantidade());
+                item.setPrecoTotal(preco.multiply(quantidade));
+                total = total.add(item.getPrecoTotal());
             }
 
-            BigDecimal preco = produtoDtoResponse.preco();
-            item.setPrecoUnitario(preco);
-            total = total.add(item.getPrecoTotal());
+            pedidoProcessor.setTotal(total);
+        } catch (Exception e) {
+            throw new EstoqueException(e);
         }
+    }
 
-        pedidoProcessor.setTotal(total);
-
-        // Verifica estoque
-        boolean finalizouDebitoEstoque = true;
+    private void baixarNoEstoque(PedidoProcessor pedidoProcessor) {
+        List<ItemPedidoProcessor> itens = pedidoProcessor.getItens();
         for (ItemPedidoProcessor item : itens) {
-            boolean sucesso = true;
-            ResponseEntity<Void> voidResponseEntity = estoqueService.debitarEstoque(new BaixaEstoqueRequestDTO(item.getSku(), item.getQuantidade()));
-            System.out.println(voidResponseEntity);
-//            if (!sucesso) {
-//               finalizouDebitoEstoque = false;
-//                return;
-//            }
+            try {
+                estoqueService.baixaEstoque((new BaixaEstoqueRequestDTO(item.getSku(), item.getQuantidade())));
+            } catch (Exception e) {
+                estoqueService.reverterEstoque(new BaixaEstoqueRequestDTO(item.getSku(), item.getQuantidade()));
+                pedidoProcessor.setStatus(PedidoStatus.FECHADO_SEM_ESTOQUE);
+                pedidoGateway.salvar(pedidoProcessor);
+                throw new EstoqueInsuficienteException(item.getSku());
+            }
+
+        }
+        pedidoGateway.salvar(pedidoProcessor);
+    }
+
+    private void validarCliente(PedidoProcessor pedidoProcessor) {
+        var retorno = clienteService.clienteExiste(pedidoProcessor.getClienteId());
+        if (retorno==false){
+            pedidoProcessor.setStatus(PedidoStatus.FALHA_CLIENTE_NAOENCONTRADO);
+            pedidoGateway.salvar(pedidoProcessor);
+            throw new ClienteException("Cliente não encontrado com ID: " + pedidoProcessor.getClienteId());
         }
 
-        if (!finalizouDebitoEstoque) {
-            pedidoProcessor.setStatus(PedidoStatus.FECHADO_SEM_ESTOQUE);
-            pedidoGateway.atualizar(pedidoProcessor);
-            return;
+    }
+
+    private ProdutoDtoResponse validarProduto(PedidoProcessor pedidoProcessor, String sku) {
+        try {
+            return  produtoService.buscarProduto(sku);
+        } catch (Exception e) {
+            pedidoProcessor.setStatus(PedidoStatus.FALHA_PRODUTO_NAOENCONTRADO);
+            pedidoGateway.salvar(pedidoProcessor);
+            throw new ProdutoNaoEncontradoException(sku);
         }
-
-        // Atualiza pedido antes de pagamento
-        pedidoProcessor.setStatus(PedidoStatus.ABERTO);
-        pedidoGateway.atualizar(pedidoProcessor);
-
-        // Solicita pagamento
-//        PagamentoRequestDTO pagamentoRequestDTO = new PagamentoRequestDTO(
-//                pedidoProcessor.getId() != null ? UUID.fromString(pedidoProcessor.getId().toString()) : null,
-//                pedidoProcessor.getTotal(),
-//                numeroCartao
-//        );
-//        ResponseEntity<PagamentoResponseDTO> pagamentoResponseDTO=pagamentoService.solicitarPagamento(pagamentoRequestDTO);
-
-        //UUID uuid = UUID.fromString(pedidoProcessor.getPedidoReciverId().toString());
-
-        PagamentoRequestDTO request = pedidoProcessorMapper.toPagamentoRequestDTO(pedidoProcessor, numeroCartao);
-        PagamentoResponseDTO resposta = pagamentoService.solicitarPagamento(request).getBody();
-
-        System.out.println(resposta);
-
     }
 }

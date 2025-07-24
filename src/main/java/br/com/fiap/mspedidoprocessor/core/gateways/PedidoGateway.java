@@ -4,5 +4,5 @@ import br.com.fiap.mspedidoprocessor.core.domain.PedidoProcessor;
 
 public interface PedidoGateway {
     PedidoProcessor salvar(PedidoProcessor pedidoProcessor);
-    void atualizar(PedidoProcessor pedidoProcessor);
+    //void atualizar(PedidoProcessor pedidoProcessor);
 }

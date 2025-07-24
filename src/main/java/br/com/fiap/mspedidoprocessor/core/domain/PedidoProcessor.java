@@ -12,10 +12,11 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PedidoProcessor {
-    private String id;
+    private UUID id;
     private Long pedidoReciverId;
     private Long clienteId;
     private List<ItemPedidoProcessor> itens;
     private BigDecimal total;
     private PedidoStatus status;
+    private String numeroCartao;
 }

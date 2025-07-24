@@ -1,4 +1,4 @@
-package br.com.fiap.mspedidoprocessor.adapter.controller;
+package br.com.fiap.mspedidoprocessor.core.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

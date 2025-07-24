@@ -20,7 +20,7 @@ public class RepositorioDePedidoGatewayImpl implements PedidoGateway {
     @Override
     public PedidoProcessor salvar(PedidoProcessor pedidoProcessor) {
         if (pedidoProcessor.getId() == null) {
-            pedidoProcessor.setId(UUID.randomUUID().toString());
+            pedidoProcessor.setId(UUID.randomUUID());
         }
         PedidoProcessorEntity pedidoEntity = pedidoProcessorMapper.toEntity(pedidoProcessor);
 
@@ -28,8 +28,8 @@ public class RepositorioDePedidoGatewayImpl implements PedidoGateway {
         return pedidoProcessorMapper.toModel(save);
     }
 
-    @Override
-    public void atualizar(PedidoProcessor pedidoProcessor) {
-        salvar(pedidoProcessor);
-    }
+//    @Override
+//    public void atualizar(PedidoProcessor pedidoProcessor) {
+//        salvar(pedidoProcessor);
+//    }
 }

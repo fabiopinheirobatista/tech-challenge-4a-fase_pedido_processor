@@ -1,5 +1,6 @@
 package br.com.fiap.mspedidoprocessor.adapter.mapper;
 
+import br.com.fiap.mspedidoprocessor.adapter.external.clientkafka.dto.Pedido;
 import br.com.fiap.mspedidoprocessor.adapter.persistence.entity.ItemPedidoProcessorEntity;
 import br.com.fiap.mspedidoprocessor.adapter.persistence.entity.PedidoProcessorEntity;
 import br.com.fiap.mspedidoprocessor.adapter.external.pagamentoservice.dto.PagamentoRequestDTO;
@@ -8,8 +9,10 @@ import br.com.fiap.mspedidoprocessor.core.domain.PedidoProcessor;
 import br.com.fiap.mspedidoprocessor.core.domain.PedidoStatus;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Component
 public class PedidoProcessorMapper {
@@ -20,7 +23,7 @@ public class PedidoProcessorMapper {
         }
 
         return PedidoProcessor.builder()
-                .id(entity.getId())
+                .id(UUID.fromString(entity.getId().toString()))
                 .pedidoReciverId(entity.getPedidoReciverId())
                 .clienteId(entity.getClienteId())
                 .total(entity.getTotal())
@@ -50,7 +53,7 @@ public class PedidoProcessorMapper {
 
 
         return PedidoProcessorEntity.builder()
-                .id(model.getId())
+                .id(model.getId().toString())
                 .pedidoReciverId(model.getPedidoReciverId())
                 .clienteId(model.getClienteId())
                 .total(model.getTotal())
@@ -74,19 +77,41 @@ public class PedidoProcessorMapper {
                 .build();
     }
 
-    public PagamentoRequestDTO toPagamentoRequestDTO(PedidoProcessor pedidoProcessor, String numeroCartao) {
+    public PagamentoRequestDTO toPagamentoRequestDTO(PedidoProcessor pedidoProcessor) {
         if (pedidoProcessor == null) {
             return null;
         }
 
         return new PagamentoRequestDTO(
-                longToUUID(pedidoProcessor.getId()),
+                pedidoProcessor.getId().toString(),
                 pedidoProcessor.getTotal(),
-                numeroCartao
+                pedidoProcessor.getNumeroCartao()
         );
     }
 
     private UUID longToUUID(String value) {
         return value != null ? UUID.fromString(value.toString()) : null;
+    }
+
+    public PedidoProcessor toPedidoProcessor(Pedido pedido) {
+        if (pedido == null) {
+            return null;
+        }
+
+        return PedidoProcessor.builder()
+                .pedidoReciverId(pedido.getId())
+                .status(PedidoStatus.valueOf(pedido.getStatus().name()))
+                .clienteId(pedido.getClienteId())
+                .numeroCartao(pedido.getNumeroCartao())
+                .itens(pedido.getItens().stream()
+                        .map(item -> ItemPedidoProcessor.builder()
+                                .sku(item.getSku())
+                                .quantidade(item.getQuantidade())
+                                .precoUnitario(BigDecimal.ZERO)
+                                .precoTotal(BigDecimal.ZERO)
+                                .build())
+                        .collect(Collectors.toList()))
+                .total(BigDecimal.ZERO)
+                .build();
     }
 }

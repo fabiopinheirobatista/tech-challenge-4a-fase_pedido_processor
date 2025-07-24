@@ -4,7 +4,8 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 public record PagamentoRequestDTO(
-        UUID pedidoId,
+        //UUID pedidoId,
+        String pedidoId,
         BigDecimal valor,
         String numeroCartao) {
 }
