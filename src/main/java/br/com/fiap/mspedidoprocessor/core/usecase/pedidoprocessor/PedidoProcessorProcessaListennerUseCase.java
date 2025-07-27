@@ -18,7 +18,7 @@ import java.util.List;
 
 @Component
 @AllArgsConstructor
-public class PedidoProcessorUseCase {
+public class PedidoProcessorProcessaListennerUseCase {
 
     private final PedidoGateway pedidoGateway;
     private final ClienteServiceGateway clienteService;
@@ -68,6 +68,8 @@ public class PedidoProcessorUseCase {
                 pedidoGateway.salvar(pedidoProcessor);
                 throw new PagamentoException("Resposta de pagamento inválida. Status: " + (resposta != null ? resposta.status() : "null"));
             }
+            pedidoProcessor.setStatus(PedidoStatus.PAGAMENTO_APROVADO);
+            pedidoGateway.salvar(pedidoProcessor);
             return resposta;
 
     }

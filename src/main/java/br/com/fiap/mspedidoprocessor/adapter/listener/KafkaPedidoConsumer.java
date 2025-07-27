@@ -4,7 +4,7 @@ import br.com.fiap.mspedidoprocessor.adapter.external.clientkafka.dto.Pedido;
 import br.com.fiap.mspedidoprocessor.adapter.mapper.PedidoProcessorMapper;
 import br.com.fiap.mspedidoprocessor.core.domain.PedidoProcessor;
 import br.com.fiap.mspedidoprocessor.core.exception.ProcessamentoMensagemException;
-import br.com.fiap.mspedidoprocessor.core.usecase.pedidoprocessor.PedidoProcessorUseCase;
+import br.com.fiap.mspedidoprocessor.core.usecase.pedidoprocessor.PedidoProcessorProcessaListennerUseCase;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class KafkaPedidoConsumer {
 
-    private final PedidoProcessorUseCase pedidoProcessor;
+    private final PedidoProcessorProcessaListennerUseCase pedidoProcessor;
     private final ObjectMapper objectMapper;
     private final PedidoProcessorMapper pedidoProcessorMapper;
 
