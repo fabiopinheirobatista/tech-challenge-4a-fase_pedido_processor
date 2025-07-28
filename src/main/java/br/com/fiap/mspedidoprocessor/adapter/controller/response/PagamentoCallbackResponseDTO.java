@@ -7,11 +7,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public record PagamentoCallbackResponseDTO(
-        Long id,
+        Long pedidoId,
         Long clienteId,
-        String numeroCartao,
-        PedidoStatus status,
-        LocalDateTime dataCriacao
+        String status
 ) {
 }
 

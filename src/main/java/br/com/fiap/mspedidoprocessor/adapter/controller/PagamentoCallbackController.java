@@ -1,14 +1,18 @@
 package br.com.fiap.mspedidoprocessor.adapter.controller;
 
 
+import br.com.fiap.mspedidoprocessor.adapter.controller.response.PagamentoCallbackResponseDTO;
 import br.com.fiap.mspedidoprocessor.adapter.external.clientkafka.dto.Pedido;
+import br.com.fiap.mspedidoprocessor.adapter.external.clientkafka.dto.PedidoStatus;
+import br.com.fiap.mspedidoprocessor.adapter.mapper.PedidoProcessorMapper;
+import br.com.fiap.mspedidoprocessor.core.domain.PagamentoCallback;
+import br.com.fiap.mspedidoprocessor.core.gateways.ConsultaPedidoProcessorGateway;
 import br.com.fiap.mspedidoprocessor.core.gateways.EstoqueServiceGateway;
 import br.com.fiap.mspedidoprocessor.core.gateways.PedidoGateway;
+import br.com.fiap.mspedidoprocessor.core.usecase.pedidoprocessor.ConsultaPedidoProcessorUseCase;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
@@ -17,27 +21,17 @@ public class PagamentoCallbackController {
 
     private final PedidoGateway pedidoGateway;
     private final EstoqueServiceGateway estoqueService;
+    private final ConsultaPedidoProcessorUseCase consultaPedidoProcessorUseCase;
 
+    private final PedidoProcessorMapper pedidoProcessorMapper;
 
-    @PostMapping("/retorno")
-    public void retornoPagamento(@RequestBody PagamentoCallback callback) {
-//        Pedido pedido = pedidoRepository.buscarPorId(callback.pedidoId);
-//
-//        if (callback.getStatus().equalsIgnoreCase("OK")) {
-//            pedido.setStatus(Status.FECHADO_COM_SUCESSO);
-//        } else {
-//            pedido.setStatus(Status.FECHADO_SEM_CREDITO);
-//            pedido.getItens().forEach(item ->
-//                    estoqueService.reverterEstoque(item.getSku(), item.getQuantidade()));
-//        }
-//
-//        pedidoRepository.atualizar(pedido);
+    @GetMapping("/consultar/{id}")
+    public ResponseEntity<PagamentoCallbackResponseDTO> consultaPagamento(@PathVariable Long id) {
+
+        PagamentoCallback pagamentoCallback = consultaPedidoProcessorUseCase.consultarPagamentoCallback(id);
+        PagamentoCallbackResponseDTO pagamentoCallbackResponseDTO = pedidoProcessorMapper.toPagamentoCallbackResponseDTO(pagamentoCallback);
+        return ResponseEntity.ok(pagamentoCallbackResponseDTO);
+
     }
 
-    public static class PagamentoCallback {
-        private Long pedidoId;
-        private String status;
-
-        // getters/setters
-    }
 }

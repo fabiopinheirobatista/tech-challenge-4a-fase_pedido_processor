@@ -9,5 +9,6 @@ import lombok.Setter;
 @Setter
 public class PagamentoCallback {
     private Long pedidoId;
+    private Long clienteId;
     private String status;
 }

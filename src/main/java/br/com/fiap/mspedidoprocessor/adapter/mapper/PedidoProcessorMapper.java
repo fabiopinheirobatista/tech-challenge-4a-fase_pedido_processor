@@ -1,10 +1,12 @@
 package br.com.fiap.mspedidoprocessor.adapter.mapper;
 
+import br.com.fiap.mspedidoprocessor.adapter.controller.response.PagamentoCallbackResponseDTO;
 import br.com.fiap.mspedidoprocessor.adapter.external.clientkafka.dto.Pedido;
 import br.com.fiap.mspedidoprocessor.adapter.persistence.entity.ItemPedidoProcessorEntity;
 import br.com.fiap.mspedidoprocessor.adapter.persistence.entity.PedidoProcessorEntity;
 import br.com.fiap.mspedidoprocessor.adapter.external.pagamentoservice.dto.PagamentoRequestDTO;
 import br.com.fiap.mspedidoprocessor.core.domain.ItemPedidoProcessor;
+import br.com.fiap.mspedidoprocessor.core.domain.PagamentoCallback;
 import br.com.fiap.mspedidoprocessor.core.domain.PedidoProcessor;
 import br.com.fiap.mspedidoprocessor.core.domain.PedidoStatus;
 import org.springframework.stereotype.Component;
@@ -113,5 +115,25 @@ public class PedidoProcessorMapper {
                         .collect(Collectors.toList()))
                 .total(BigDecimal.ZERO)
                 .build();
+    }
+
+
+    public PagamentoCallbackResponseDTO toPagamentoCallbackResponseDTO(PagamentoCallback callback) {
+        return new PagamentoCallbackResponseDTO(
+                callback.getPedidoId(),
+                callback.getClienteId(),
+                callback.getStatus()
+        );
+    }
+
+    public PagamentoCallback toPagamentoCallback(PedidoProcessorEntity entity) {
+        if (entity == null) {
+            return null;
+        }
+        return new PagamentoCallback(
+            entity.getPedidoReciverId(),
+                entity.getClienteId(),
+            entity.getStatus().toString()
+        );
     }
 }

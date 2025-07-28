@@ -2,17 +2,20 @@ package br.com.fiap.mspedidoprocessor.adapter.gateway;
 
 import br.com.fiap.mspedidoprocessor.adapter.persistence.entity.PedidoProcessorEntity;
 import br.com.fiap.mspedidoprocessor.adapter.persistence.repository.PedidoRepositoryJpa;
+import br.com.fiap.mspedidoprocessor.core.domain.PagamentoCallback;
 import br.com.fiap.mspedidoprocessor.core.domain.PedidoProcessor;
+import br.com.fiap.mspedidoprocessor.core.gateways.ConsultaPedidoProcessorGateway;
 import br.com.fiap.mspedidoprocessor.core.gateways.PedidoGateway;
 import br.com.fiap.mspedidoprocessor.adapter.mapper.PedidoProcessorMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
 @AllArgsConstructor
-public class RepositorioDePedidoGatewayImpl implements PedidoGateway {
+public class RepositorioDePedidoGatewayImpl implements PedidoGateway, ConsultaPedidoProcessorGateway {
 
     private final PedidoRepositoryJpa pedidoRepositoryJpa;
     private final PedidoProcessorMapper pedidoProcessorMapper;
@@ -28,8 +31,14 @@ public class RepositorioDePedidoGatewayImpl implements PedidoGateway {
         return pedidoProcessorMapper.toModel(save);
     }
 
-//    @Override
-//    public void atualizar(PedidoProcessor pedidoProcessor) {
-//        salvar(pedidoProcessor);
-//    }
+    @Override
+    public PagamentoCallback consultarPagamentoCallback(Long pedidoId) {
+        Optional<PedidoProcessorEntity> pedidoReciverId = pedidoRepositoryJpa.findByPedidoReciverId(pedidoId);
+        if (pedidoReciverId.isPresent()) {
+            PedidoProcessorEntity pedidoEntity = pedidoReciverId.get();
+            return pedidoProcessorMapper.toPagamentoCallback(pedidoEntity);
+        }
+        return null;
+    }
+
 }
