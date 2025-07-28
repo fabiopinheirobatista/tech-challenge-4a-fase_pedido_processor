@@ -2,9 +2,9 @@ package br.com.fiap.mspedidoprocessor.adapter.mapper;
 
 import br.com.fiap.mspedidoprocessor.adapter.controller.response.PagamentoCallbackResponseDTO;
 import br.com.fiap.mspedidoprocessor.adapter.external.clientkafka.dto.Pedido;
+import br.com.fiap.mspedidoprocessor.adapter.external.pagamentoservice.dto.PagamentoRequestDTO;
 import br.com.fiap.mspedidoprocessor.adapter.persistence.entity.ItemPedidoProcessorEntity;
 import br.com.fiap.mspedidoprocessor.adapter.persistence.entity.PedidoProcessorEntity;
-import br.com.fiap.mspedidoprocessor.adapter.external.pagamentoservice.dto.PagamentoRequestDTO;
 import br.com.fiap.mspedidoprocessor.core.domain.ItemPedidoProcessor;
 import br.com.fiap.mspedidoprocessor.core.domain.PagamentoCallback;
 import br.com.fiap.mspedidoprocessor.core.domain.PedidoProcessor;

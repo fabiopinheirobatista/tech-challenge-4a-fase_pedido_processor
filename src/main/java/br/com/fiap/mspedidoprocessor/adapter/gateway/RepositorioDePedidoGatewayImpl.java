@@ -1,12 +1,12 @@
 package br.com.fiap.mspedidoprocessor.adapter.gateway;
 
+import br.com.fiap.mspedidoprocessor.adapter.mapper.PedidoProcessorMapper;
 import br.com.fiap.mspedidoprocessor.adapter.persistence.entity.PedidoProcessorEntity;
 import br.com.fiap.mspedidoprocessor.adapter.persistence.repository.PedidoRepositoryJpa;
 import br.com.fiap.mspedidoprocessor.core.domain.PagamentoCallback;
 import br.com.fiap.mspedidoprocessor.core.domain.PedidoProcessor;
 import br.com.fiap.mspedidoprocessor.core.gateways.ConsultaPedidoProcessorGateway;
 import br.com.fiap.mspedidoprocessor.core.gateways.PedidoGateway;
-import br.com.fiap.mspedidoprocessor.adapter.mapper.PedidoProcessorMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 

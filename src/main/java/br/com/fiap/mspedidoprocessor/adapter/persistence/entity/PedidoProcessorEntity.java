@@ -3,7 +3,6 @@ package br.com.fiap.mspedidoprocessor.adapter.persistence.entity;
 import br.com.fiap.mspedidoprocessor.core.domain.PedidoProcessor;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
