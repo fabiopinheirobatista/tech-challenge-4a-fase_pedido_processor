@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 
-@FeignClient(name = "cliente-service", url = "http://localhost:8084")
+@FeignClient(name = "cliente-service", url = "${services.cliente}")
 public interface ClienteServiceClient extends ClienteServiceGateway {
 
     @GetMapping("/clientes/existe/{id}")
