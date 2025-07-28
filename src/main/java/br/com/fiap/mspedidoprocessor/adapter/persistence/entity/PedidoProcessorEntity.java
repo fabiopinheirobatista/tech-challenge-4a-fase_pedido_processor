@@ -1,12 +1,10 @@
 package br.com.fiap.mspedidoprocessor.adapter.persistence.entity;
 
-import br.com.fiap.mspedidoprocessor.core.domain.PedidoProcessor;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -48,19 +46,19 @@ public class PedidoProcessorEntity {
         }
     }
 
-    public PedidoProcessorEntity(PedidoProcessor pedidoProcessor) {
-        String id = pedidoProcessor.getId().toString();
-        if (id == null) {
-            id = UUID.randomUUID().toString();
-        }
-        this.id = id;
-        this.status = pedidoProcessor.getStatus().toString();
-        this.itens = new ArrayList<>();
-        this.pedidoReciverId = pedidoProcessor.getPedidoReciverId();
-        this.clienteId = pedidoProcessor.getClienteId();
-        this.criadoEm = LocalDateTime.now();
-        this.total = pedidoProcessor.getTotal();
-
-
-    }
+//    public PedidoProcessorEntity(PedidoProcessor pedidoProcessor) {
+//        String id = pedidoProcessor.getId().toString();
+//        if (id == null) {
+//            id = UUID.randomUUID().toString();
+//        }
+//        this.id = id;
+//        this.status = pedidoProcessor.getStatus().toString();
+//        this.itens = new ArrayList<>();
+//        this.pedidoReciverId = pedidoProcessor.getPedidoReciverId();
+//        this.clienteId = pedidoProcessor.getClienteId();
+//        this.criadoEm = LocalDateTime.now();
+//        this.total = pedidoProcessor.getTotal();
+//
+//
+//    }
 }

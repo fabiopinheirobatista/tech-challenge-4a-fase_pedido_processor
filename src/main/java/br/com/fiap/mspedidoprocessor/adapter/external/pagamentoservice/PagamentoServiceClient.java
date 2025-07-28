@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface PagamentoServiceClient extends PagamentoServiceGateway {
 
     @PostMapping("/pagamentos")
-    ResponseEntity<PagamentoResponseDTO> solicitarPagamento(@RequestBody PagamentoRequestDTO request);
+    PagamentoResponseDTO solicitarPagamento(@RequestBody PagamentoRequestDTO request);
 
 //    @GetMapping("/pagamentos/{idPagamento}")
 //    ResponseEntity<PagamentoResponseDTO> consultarStatus(@PathVariable("idPagamento") UUID idPagamento);

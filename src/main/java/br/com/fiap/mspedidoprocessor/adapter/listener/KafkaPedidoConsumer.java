@@ -4,7 +4,7 @@ import br.com.fiap.mspedidoprocessor.adapter.external.clientkafka.dto.Pedido;
 import br.com.fiap.mspedidoprocessor.adapter.mapper.PedidoProcessorMapper;
 import br.com.fiap.mspedidoprocessor.core.domain.PedidoProcessor;
 import br.com.fiap.mspedidoprocessor.core.exception.ProcessamentoMensagemException;
-import br.com.fiap.mspedidoprocessor.core.usecase.pedidoprocessor.PedidoProcessorProcessaListennerUseCase;
+import br.com.fiap.mspedidoprocessor.core.usecase.pedidoprocessor.ProcessarPedidoUseCase;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class KafkaPedidoConsumer {
 
-    private final PedidoProcessorProcessaListennerUseCase pedidoProcessor;
+    private final ProcessarPedidoUseCase pedidoProcessor;
     private final ObjectMapper objectMapper;
     private final PedidoProcessorMapper pedidoProcessorMapper;
 
@@ -27,7 +27,6 @@ public class KafkaPedidoConsumer {
 
         try {
             processarMensagem(record);
-            log.info("Mensagem processada com sucesso");
             ack.acknowledge();
         } catch (Exception e) {
             log.error("Erro ao processar mensagem. A mensagem será reprocessada. Erro: {}", e.getMessage(), e);

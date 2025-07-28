@@ -136,4 +136,21 @@ public class PedidoProcessorMapper {
             entity.getStatus().toString()
         );
     }
+
+
+//    public PedidoProcessorEntity toPedidoProcessor(PedidoProcessor pedidoProcessor) {
+//        String id = pedidoProcessor.getId().toString();
+//        if (id == null) {
+//            id = UUID.randomUUID().toString();
+//        }
+//        this.id = id;
+//        this.status = pedidoProcessor.getStatus().toString();
+//        this.itens = new ArrayList<>();
+//        this.pedidoReciverId = pedidoProcessor.getPedidoReciverId();
+//        this.clienteId = pedidoProcessor.getClienteId();
+//        this.criadoEm = LocalDateTime.now();
+//        this.total = pedidoProcessor.getTotal();
+//
+//
+//    }
 }

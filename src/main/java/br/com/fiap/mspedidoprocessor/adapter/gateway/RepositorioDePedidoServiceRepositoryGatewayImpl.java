@@ -5,8 +5,8 @@ import br.com.fiap.mspedidoprocessor.adapter.persistence.entity.PedidoProcessorE
 import br.com.fiap.mspedidoprocessor.adapter.persistence.repository.PedidoRepositoryJpa;
 import br.com.fiap.mspedidoprocessor.core.domain.PagamentoCallback;
 import br.com.fiap.mspedidoprocessor.core.domain.PedidoProcessor;
-import br.com.fiap.mspedidoprocessor.core.gateways.ConsultaPedidoProcessorGateway;
-import br.com.fiap.mspedidoprocessor.core.gateways.PedidoGateway;
+import br.com.fiap.mspedidoprocessor.core.gateways.ConsultaPedidoProcessorServiceGateway;
+import br.com.fiap.mspedidoprocessor.core.gateways.PedidoRepositoryGateway;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +15,7 @@ import java.util.UUID;
 
 @Component
 @AllArgsConstructor
-public class RepositorioDePedidoGatewayImpl implements PedidoGateway, ConsultaPedidoProcessorGateway {
+public class RepositorioDePedidoServiceRepositoryGatewayImpl implements PedidoRepositoryGateway, ConsultaPedidoProcessorServiceGateway {
 
     private final PedidoRepositoryJpa pedidoRepositoryJpa;
     private final PedidoProcessorMapper pedidoProcessorMapper;
