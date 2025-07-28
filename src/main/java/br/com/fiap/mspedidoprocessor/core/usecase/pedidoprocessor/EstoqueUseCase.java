@@ -18,7 +18,6 @@ public class EstoqueUseCase {
 
     private final EstoqueServiceGateway estoqueGateway;
 
-
     public void baixarEstoque(PedidoProcessor pedidoProcessor) {
         log.info("Iniciando baixa de estoque para pedido ID: {}", pedidoProcessor.getId());
         for (var item : pedidoProcessor.getItens()) {

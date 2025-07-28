@@ -119,6 +119,9 @@ public class PedidoProcessorMapper {
 
 
     public PagamentoCallbackResponseDTO toPagamentoCallbackResponseDTO(PagamentoCallback callback) {
+        if (callback==null){
+            return null;
+        }
         return new PagamentoCallbackResponseDTO(
                 callback.getPedidoId(),
                 callback.getClienteId(),

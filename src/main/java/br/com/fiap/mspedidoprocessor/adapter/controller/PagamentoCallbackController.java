@@ -26,6 +26,9 @@ public class PagamentoCallbackController {
 
         PagamentoCallback pagamentoCallback = consultaPedidoProcessorUseCase.consultarPagamentoCallback(id);
         PagamentoCallbackResponseDTO pagamentoCallbackResponseDTO = pedidoProcessorMapper.toPagamentoCallbackResponseDTO(pagamentoCallback);
+        if (pagamentoCallbackResponseDTO == null) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(pagamentoCallbackResponseDTO);
 
     }
