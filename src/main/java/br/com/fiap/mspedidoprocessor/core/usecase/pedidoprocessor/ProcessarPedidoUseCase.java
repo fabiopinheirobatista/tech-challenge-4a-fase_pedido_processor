@@ -1,5 +1,7 @@
 package br.com.fiap.mspedidoprocessor.core.usecase.pedidoprocessor;
 
+import org.springframework.stereotype.Component;
+
 import br.com.fiap.mspedidoprocessor.adapter.mapper.PedidoProcessorMapper;
 import br.com.fiap.mspedidoprocessor.core.domain.PagamentoDTO;
 import br.com.fiap.mspedidoprocessor.core.domain.PedidoProcessor;
@@ -8,10 +10,13 @@ import br.com.fiap.mspedidoprocessor.core.exception.ClienteNaoEncontradoExceptio
 import br.com.fiap.mspedidoprocessor.core.exception.EstoqueException;
 import br.com.fiap.mspedidoprocessor.core.exception.PagamentoException;
 import br.com.fiap.mspedidoprocessor.core.exception.ProdutoNaoEncontradoException;
-import br.com.fiap.mspedidoprocessor.core.gateways.*;
+import br.com.fiap.mspedidoprocessor.core.gateways.ClienteServiceGateway;
+import br.com.fiap.mspedidoprocessor.core.gateways.EstoqueServiceGateway;
+import br.com.fiap.mspedidoprocessor.core.gateways.PagamentoServiceGateway;
+import br.com.fiap.mspedidoprocessor.core.gateways.PedidoRepositoryGateway;
+import br.com.fiap.mspedidoprocessor.core.gateways.ProdutoServiceGateway;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
