@@ -33,7 +33,7 @@ public class RepositorioDePedidoServiceRepositoryGatewayImpl implements PedidoRe
 
     @Override
     public PagamentoCallback consultarPagamentoCallback(Long pedidoId) {
-        Optional<PedidoProcessorEntity> pedidoReciverId = pedidoRepositoryJpa.findByPedidoReciverId(pedidoId);
+        Optional<PedidoProcessorEntity> pedidoReciverId = pedidoRepositoryJpa.findTopByPedidoReciverIdOrderByIdDesc(pedidoId);
         if (pedidoReciverId.isPresent()) {
             PedidoProcessorEntity pedidoEntity = pedidoReciverId.get();
             return pedidoProcessorMapper.toPagamentoCallback(pedidoEntity);

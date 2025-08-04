@@ -8,5 +8,6 @@ import java.util.Optional;
 
 @Repository
 public interface PedidoRepositoryJpa extends JpaRepository<PedidoProcessorEntity, String> {
-    Optional<PedidoProcessorEntity> findByPedidoReciverId(Long pedidoReciverId);
+    Optional<PedidoProcessorEntity> findTopByPedidoReciverIdOrderByIdDesc(Long pedidoReciverId);
+
 }
